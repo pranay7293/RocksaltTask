@@ -3366,8 +3366,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738e62c169ff9424b828583392ab7ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelWinPage: {fileID: 452500263}
-  LevelLosePage: {fileID: 1945060000}
   PauseMenu: {fileID: 40932267}
   Pause: {fileID: 542003619}
   NextLevel: {fileID: 411159725}
@@ -3921,16 +3919,6 @@ MonoBehaviour:
   - {fileID: 4755107528010932370, guid: f20750ea33830c5499e069ea2484bcdf, type: 3}
   delayPS: 1
   elementsBoardSet: {fileID: 1427978011}
-  arrayLayout:
-    rows:
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
 --- !u!1 &1490927291
 GameObject:
   m_ObjectHideFlags: 0
@@ -5362,8 +5350,8 @@ MonoBehaviour:
   targetScore: 400
   movesAllowed: 40
   timeLimit: 99
-  targetRedElements: 40
-  targetBlueElements: 40
+  targetRedElements: 30
+  targetBlueElements: 30
   scoreText: {fileID: 1292801335}
   movesText: {fileID: 1741689756}
   resultText: {fileID: 1691828446}
@@ -5371,7 +5359,8 @@ MonoBehaviour:
   redCount: {fileID: 679029726}
   timeLeft: {fileID: 412049518}
   scoreSlider: {fileID: 1686184169}
-  levelUI: {fileID: 1233132785}
+  LevelWinPage: {fileID: 452500263}
+  LevelLosePage: {fileID: 1945060000}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

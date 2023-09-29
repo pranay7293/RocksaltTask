@@ -27,7 +27,8 @@ public class LevelManager : MonoBehaviour
     public TextMeshProUGUI redCount;
     public TextMeshProUGUI timeLeft;
     public Slider scoreSlider;
-    public LevelUI levelUI;
+    public GameObject LevelWinPage;
+    public GameObject LevelLosePage;
 
     private bool isTargetReached = false;
     private bool isBlueCleared = false;
@@ -84,11 +85,11 @@ public class LevelManager : MonoBehaviour
         totalScore += newScore;
 
         UpdateScoreText(totalScore);
-        if (totalScore >= targetScore && !isTargetReached)
+        if ((currentLevel == GameLevel.Level1 || currentLevel == GameLevel.Level3) && totalScore >= targetScore)
         {
             GameOver(true);
             isTargetReached = true;
-        }
+        }   
     }
 
     public void BlueElementsCleared(int count)
@@ -122,11 +123,11 @@ public class LevelManager : MonoBehaviour
     }
     public void CheckLevelCompletion()
     {
-        if (isBlueCleared && currentLevel == GameLevel.Level2)
+        if (isBlueCleared && (currentLevel == GameLevel.Level2))
         {
             GameOver(true );
         }
-        else if (isBlueCleared && isRedCleared && currentLevel == GameLevel.Level4)
+        else if (isBlueCleared && isRedCleared && (currentLevel == GameLevel.Level4))
         {
             GameOver(true);
         }
@@ -163,14 +164,25 @@ public class LevelManager : MonoBehaviour
     {
         if (win)
         {
+
             SoundManager.Instance.PlaySound(Sounds.LevelCompleted);
-            Invoke(nameof(levelUI.LevelWinPage), 3f);
+            Invoke(nameof(LoadLevelWinPage), 3f);
         }
         else
         {
 
             SoundManager.Instance.PlaySound(Sounds.LevelFailed);
-            Invoke(nameof(levelUI.LevelLosePage), 3f);
+            Invoke(nameof(LoadLevelLosePage), 3f);
         }
     }
+
+    public void LoadLevelWinPage()
+    {
+        LevelWinPage.SetActive(true);
+    }
+    public void LoadLevelLosePage()
+    {
+        LevelLosePage.SetActive(true);
+    }
+
 }

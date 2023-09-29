@@ -1057,9 +1057,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1826762165}
   - {fileID: 812477472}
   - {fileID: 653573016}
-  - {fileID: 1826762165}
   - {fileID: 411159724}
   m_Father: {fileID: 1233132784}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2654,8 +2654,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ac6e93038c3e08c418a058994d1b2fd2, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3366,8 +3366,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738e62c169ff9424b828583392ab7ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelWinPage: {fileID: 452500263}
-  LevelLosePage: {fileID: 1945060000}
   PauseMenu: {fileID: 40932267}
   Pause: {fileID: 542003619}
   NextLevel: {fileID: 411159725}
@@ -3921,16 +3919,6 @@ MonoBehaviour:
   - {fileID: 4755107528010932370, guid: f20750ea33830c5499e069ea2484bcdf, type: 3}
   delayPS: 1
   elementsBoardSet: {fileID: 1427978011}
-  arrayLayout:
-    rows:
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
 --- !u!1 &1490927291
 GameObject:
   m_ObjectHideFlags: 0
@@ -5360,7 +5348,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevel: 0
   targetScore: 200
-  movesAllowed: 15
+  movesAllowed: 2
   timeLimit: 60
   targetRedElements: 20
   targetBlueElements: 20
@@ -5371,7 +5359,8 @@ MonoBehaviour:
   redCount: {fileID: 679029726}
   timeLeft: {fileID: 412049518}
   scoreSlider: {fileID: 1686184169}
-  levelUI: {fileID: 1233132785}
+  LevelWinPage: {fileID: 452500263}
+  LevelLosePage: {fileID: 1945060000}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

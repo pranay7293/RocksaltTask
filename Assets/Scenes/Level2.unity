@@ -1044,7 +1044,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &452500264
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2269,7 +2269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: -1
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -3367,8 +3367,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738e62c169ff9424b828583392ab7ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelWinPage: {fileID: 452500263}
-  LevelLosePage: {fileID: 1945060000}
   PauseMenu: {fileID: 40932267}
   Pause: {fileID: 542003619}
   NextLevel: {fileID: 411159725}
@@ -3911,7 +3909,7 @@ MonoBehaviour:
   elementsprefabs:
   - {fileID: 1552961566591518981, guid: 664cbe9df19d53d40892f62e2071f464, type: 3}
   - {fileID: 4314500186541099491, guid: c005b9403365e054aa8823c6e073fd7e, type: 3}
-  - {fileID: 81079611047653855, guid: 489f9ff6a8e05ec429be7e64cdc671d1, type: 3}
+  - {fileID: 1552961566591518981, guid: 664cbe9df19d53d40892f62e2071f464, type: 3}
   - {fileID: 4767161329749362043, guid: f0dcb200286883a4b8d72f9a9fafa3d9, type: 3}
   - {fileID: 2662863608970552454, guid: 9e228857a365bba45811b37e67aa3609, type: 3}
   particles:
@@ -3922,16 +3920,6 @@ MonoBehaviour:
   - {fileID: 4755107528010932370, guid: f20750ea33830c5499e069ea2484bcdf, type: 3}
   delayPS: 1
   elementsBoardSet: {fileID: 1427978011}
-  arrayLayout:
-    rows:
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
-    - row: 000000000000
 --- !u!1 &1490927291
 GameObject:
   m_ObjectHideFlags: 0
@@ -5361,7 +5349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevel: 1
   targetScore: 250
-  movesAllowed: 18
+  movesAllowed: 24
   timeLimit: 99
   targetRedElements: 20
   targetBlueElements: 40
@@ -5372,7 +5360,8 @@ MonoBehaviour:
   redCount: {fileID: 679029726}
   timeLeft: {fileID: 412049518}
   scoreSlider: {fileID: 1686184169}
-  levelUI: {fileID: 1233132785}
+  LevelWinPage: {fileID: 452500263}
+  LevelLosePage: {fileID: 1945060000}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

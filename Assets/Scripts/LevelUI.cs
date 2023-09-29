@@ -8,8 +8,7 @@ using UnityEngine.UI;
 
 public class LevelUI : MonoBehaviour
 {
-    public GameObject LevelWinPage;
-    public GameObject LevelLosePage;
+   
     public GameObject PauseMenu;
     public Button Pause;
     public Button NextLevel;
@@ -20,7 +19,7 @@ public class LevelUI : MonoBehaviour
     public Button Exit2;
     public Button Exit3;
 
-    void Start()
+    void Awake()
     {
         Pause.onClick.AddListener(PauseGame);
         NextLevel.onClick.AddListener(NextLevelLoad);
@@ -63,16 +62,11 @@ public class LevelUI : MonoBehaviour
 
     private void ExitToLobby()
     {
+        Debug.Log("loadLobby");
         SoundManager.Instance.PlaySound(Sounds.BackExit);
-        SceneManager.LoadScene(0);
+        int index = 0;
+        SceneManager.LoadScene(index);
     }
-    public void LoadLevelWinPage()
-    {
-        LevelWinPage.SetActive(true);
-    }
-    public void LoadLevelLosePage()
-    {
-        LevelLosePage.SetActive(true);
-    }
+    
 
 }
