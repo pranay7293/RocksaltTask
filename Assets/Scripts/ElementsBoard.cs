@@ -12,19 +12,22 @@ public class ElementsBoard : MonoBehaviour
     public float spacingX;
     public float spacingY;
 
+    public LevelManager levelManager;
+
     public Element[] elementsprefabs;
+    public ParticleSystem[] particles;
+    public int delayPS;
 
     public Cell[,] cellBoard;
 
     public GameObject elementsBoardSet;
 
-    public ArrayLayout arrayLayout;
     public static ElementsBoard instance;
 
     private List<Element> selectedElements = new List<Element>();
     private bool isSwapping = false;
 
-
+    private bool isGameStarted = false;
     private void Awake()
     {
         instance = this;
@@ -38,36 +41,28 @@ public class ElementsBoard : MonoBehaviour
     private void InitializeBoard()
     {
         cellBoard = new Cell[rows, cols];
-        spacingX = (float)(rows - 1) / 2;
-        spacingY = (float)((cols - 1) / 2) + 1;
-
+        
         for (int y = 0; y < cols; y++)
         {
             for (int x = 0; x < rows; x++)
             {
                 Vector2 position = new Vector2(x - spacingX, y - spacingY);
 
-                if (arrayLayout.rows[y].row[x])
-                {
-                    cellBoard[x, y] = new Cell(false, null);
-                }
-                else
-                {
-                    int randomeIndex = Random.Range(0, elementsprefabs.Length);
+                int randomeIndex = Random.Range(0, elementsprefabs.Length);
 
-                    Element element = Instantiate(elementsprefabs[randomeIndex], position, Quaternion.identity);
-                    element.SetIndicies(x, y);
-                    cellBoard[x, y] = new Cell(true, element);
-                }
-
+                Element element = Instantiate(elementsprefabs[randomeIndex], position, Quaternion.identity);
+                element.SetIndicies(x, y);
+                cellBoard[x, y] = new Cell(true, element);
             }
         }
         while (CheckBoard()) { }
     }
 
 
+
     public void SelectedElement(Element element)
     {
+        isGameStarted = true;
         if (isSwapping)
             return;
 
@@ -82,9 +77,9 @@ public class ElementsBoard : MonoBehaviour
                 if (AreElementsAdjacent(selectedElements[0], element))
                 {
                     selectedElements.Add(element);
-                    // Attempt to swap the selected elements.
                     TrySwapElements(selectedElements[0], selectedElements[1]);
                 }
+                selectedElements.Clear();
             }
             else
             {
@@ -96,22 +91,25 @@ public class ElementsBoard : MonoBehaviour
 
     private void TrySwapElements(Element element1, Element element2)
     {
-        // Swap the elements' positions.
         SwapElementsPosition(element1, element2);
 
-        // Check for matches and handle them.
         bool hasMatched = CheckBoard();
 
-        // If no match is found, swap the elements back.
         if (!hasMatched)
         {
+
+            SoundManager.Instance.PlaySound(Sounds.Error);
             SwapElementsPosition(element1, element2);
         }
         else
         {
-            // Clear the selected elements.
-            selectedElements.Clear();
+            if (isGameStarted)
+            {
+                SoundManager.Instance.PlaySound(Sounds.Gemclick);
+                levelManager.MakeMove();
+            }            
         }
+        while (CheckBoard()) { }
     }
 
 
@@ -126,17 +124,14 @@ public class ElementsBoard : MonoBehaviour
 
     private void SwapElementsPosition(Element element1, Element element2)
     {
-        // Swap the elements' positions in the elementsBoard array.
         Vector2Int tempIndices = new Vector2Int(element1.xIndex, element1.yIndex);
 
         cellBoard[element1.xIndex, element1.yIndex].element = element2;
         cellBoard[element2.xIndex, element2.yIndex].element = element1;
 
-        // Swap the elements' indices.
         element1.SetIndicies(element2.xIndex, element2.yIndex);
         element2.SetIndicies(tempIndices.x, tempIndices.y);
 
-        // Update the visual positions of the GameObjects.
         Vector3 tempPosition = element1.transform.position;
 
         element1.transform.position = element2.transform.position;
@@ -146,16 +141,10 @@ public class ElementsBoard : MonoBehaviour
 
     public bool CheckBoard()
     {
-        Debug.Log("Checking Board");
-
         bool hasmatched = false;
 
         List<Element> elementsToRemove = new();
 
-        do
-        {
-            // Clear the matched elements list for each iteration.
-            elementsToRemove.Clear();
             for (int y = 0; y < cols; y++)
             {
                 for (int x = 0; x < rows; x++)
@@ -183,12 +172,59 @@ public class ElementsBoard : MonoBehaviour
             }
             if (hasmatched)
             {
-                RemoveElements(elementsToRemove);
+            if(isGameStarted)
+            {
+                int scoreValue = CalculateScore(elementsToRemove);
+                int blueCount = CalculateBlueCount(elementsToRemove);
+                int redCount = CalculateRedCount(elementsToRemove);
+                levelManager.UpdateScore(scoreValue);
+                levelManager.BlueElementsCleared(blueCount);
+                levelManager.RedElementsCleared(redCount);
+
             }
-        } while (hasmatched);
+            RemoveElements(elementsToRemove);
+            }
 
         return hasmatched;
     }
+
+    private int CalculateRedCount(List<Element> elementsToRemove)
+    {
+        int count = 0;
+        foreach (var element in elementsToRemove)
+        {
+            if (element.elementType == ElementType.Red)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int CalculateBlueCount(List<Element> elementsToRemove)
+    {
+        int count = 0;
+        foreach (var element in elementsToRemove)
+        {
+            if (element.elementType == ElementType.Blue)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int CalculateScore(List<Element> elementsToRemove)
+    {
+        int totalScore = 0;
+        foreach (var element in elementsToRemove)
+        {
+            totalScore += element.scoreValue;
+        }
+        return totalScore;
+    }
+
+
     public void RemoveElements(List<Element> elementsToRemove)
     {
         foreach (var elementToRemove in elementsToRemove)
@@ -198,27 +234,30 @@ public class ElementsBoard : MonoBehaviour
 
             if (cellBoard[x, y].element == elementToRemove)
             {
-                Debug.Log($"old element type: {elementToRemove.name}");
+                ElementType elementType = elementToRemove.elementType;
+                ParticleSystem particleSystemPrefab = particles[(int)elementType];
 
+                ParticleSystem newParticleSystem = Instantiate(particleSystemPrefab, elementToRemove.transform.position, Quaternion.identity);
+                newParticleSystem.Play();
 
-                Debug.Log($"Randomizing element at ({x}, {y})");
-
-                // Destroy the old element
                 Destroy(cellBoard[x, y].element.gameObject);
 
-                // Instantiate a new element with a random element type
-                int randomIndex = Random.Range(0, elementsprefabs.Length);
-                Element newElement = Instantiate(elementsprefabs[randomIndex], new Vector2(x - spacingX, y - spacingY), Quaternion.identity);
-                newElement.SetIndicies(x, y);
-                cellBoard[x, y].element = newElement;
-
-                Debug.Log($"New element type: {newElement.name}");
+                StartCoroutine(WaitForNewElement(newParticleSystem, x, y));
             }
         }
     }
 
+    private IEnumerator WaitForNewElement(ParticleSystem particleSystem,  int x, int y)
+    {
+        yield return new WaitForSeconds(delayPS);
 
-
+        Destroy(particleSystem.gameObject);
+        // Instantiate a new element after the delay
+        int randomIndex = Random.Range(0, elementsprefabs.Length);
+        Element newElement = Instantiate(elementsprefabs[randomIndex], new Vector2(x - spacingX, y - spacingY), Quaternion.identity);
+        newElement.SetIndicies(x, y);
+        cellBoard[x, y].element = newElement;
+    }
 
     private MatchResult IsConnected(Element element)
     {
@@ -234,7 +273,6 @@ public class ElementsBoard : MonoBehaviour
 
         if(connectedElements.Count == 3) 
         { 
-            Debug.Log(" Horizontal match 3 of Type: " + connectedElements[0].elementType);
             return new MatchResult
             {
                 connectedElements = connectedElements,
@@ -243,7 +281,6 @@ public class ElementsBoard : MonoBehaviour
         }
         else if(connectedElements.Count > 3)
         {
-            Debug.Log(" Long Horizontal match of Type: " + connectedElements[0].elementType);
             return new MatchResult
             {
                 connectedElements = connectedElements,
@@ -262,7 +299,6 @@ public class ElementsBoard : MonoBehaviour
 
         if (connectedElements.Count == 3)
         {
-            Debug.Log(" Vertical match 3 of Type: " + connectedElements[0].elementType);
             return new MatchResult
             {
                 connectedElements = connectedElements,
@@ -271,7 +307,6 @@ public class ElementsBoard : MonoBehaviour
         }
         else if (connectedElements.Count > 3)
         {
-            Debug.Log(" Long Vertical match of Type: " + connectedElements[0].elementType);
             return new MatchResult
             {
                 connectedElements = connectedElements,

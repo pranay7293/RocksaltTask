@@ -9,8 +9,7 @@ public class Element : MonoBehaviour
     public int yIndex;
     public bool isMatched;
 
-    private Vector2 initialPos;
-
+    public int scoreValue;
 
     private ElementsBoard board;
 
@@ -23,17 +22,14 @@ public class Element : MonoBehaviour
 
     private void Start()
     {
-        initialPos = transform.position;
         board = ElementsBoard.instance;
     }
 
     private void OnMouseDown()
     {
-        Debug.Log("Clicked ");
         if (!isMatched)
         {
             board.SelectedElement(this);
-            Debug.Log("Processed ");
 
         }
     }
